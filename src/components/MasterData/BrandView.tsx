@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react';
-import { Brand } from '../../types';
-import { masterDataService } from '../../services/masterDataService';
-import { SearchBar } from '../SearchBar';
-import { Modal } from '../Modal';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Plus } from "lucide-react";
+import { Brand } from "../../types";
+import { masterDataService } from "../../services/masterDataService";
+import { SearchBar } from "../SearchBar";
+import { Modal } from "../Modal";
 
 export function BrandView() {
   const { t } = useTranslation();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
-  const [formData, setFormData] = useState({ name: '' });
+  const [formData, setFormData] = useState({ name: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,8 +28,8 @@ export function BrandView() {
       setBrands(data);
       setError(null);
     } catch (err) {
-      console.error('Failed to load brands:', err);
-      setError(t('master.messages.error.loadBrands'));
+      console.error("Failed to load brands:", err);
+      setError(t("master.messages.error.loadBrands"));
     } finally {
       setLoading(false);
     }
@@ -44,33 +44,37 @@ export function BrandView() {
       if (editingBrand) {
         await masterDataService.updateBrand({
           ...editingBrand,
-          name: formData.name
+          name: formData.name,
         });
-        alert(t('master.messages.updateBrandSuccess'));
+        alert(t("master.messages.updateBrandSuccess"));
       } else {
         await masterDataService.addBrand(formData.name);
-        alert(t('master.messages.addBrandSuccess'));
+        alert(t("master.messages.addBrandSuccess"));
       }
       await loadBrands();
       handleCloseModal();
     } catch (err) {
-      console.error('Failed to save brand:', err);
-      alert(editingBrand ? t('master.messages.error.updateBrand') : t('master.messages.error.addBrand'));
+      console.error("Failed to save brand:", err);
+      alert(
+        editingBrand
+          ? t("master.messages.error.updateBrand")
+          : t("master.messages.error.addBrand")
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t('master.messages.confirmDeleteBrand'))) return;
+    if (!window.confirm(t("master.messages.confirmDeleteBrand"))) return;
 
     try {
       await masterDataService.deleteBrand(id);
-      alert(t('master.messages.deleteBrandSuccess'));
+      alert(t("master.messages.deleteBrandSuccess"));
       await loadBrands();
     } catch (err) {
-      console.error('Failed to delete brand:', err);
-      alert(t('master.messages.error.deleteBrand'));
+      console.error("Failed to delete brand:", err);
+      alert(t("master.messages.error.deleteBrand"));
     }
   };
 
@@ -83,11 +87,13 @@ export function BrandView() {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingBrand(null);
-    setFormData({ name: '' });
+    setFormData({ name: "" });
   };
 
-  const filteredBrands = brands.filter(brand =>
-    searchQuery ? brand.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
+  const filteredBrands = brands.filter((brand) =>
+    searchQuery
+      ? brand.name.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
   );
 
   if (loading) {
@@ -99,15 +105,15 @@ export function BrandView() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="flex flex-col h-full bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">{t('master.form.brand.title')}</h2>
+        <h2 className="text-2xl font-bold">{t("master.form.brand.title")}</h2>
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
         >
           <Plus size={20} />
-          {t('master.form.brand.addNew')}
+          {t("master.form.brand.addNew")}
         </button>
       </div>
 
@@ -115,16 +121,16 @@ export function BrandView() {
         <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder={t('common.search')}
+          placeholder={t("common.search")}
         />
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="flex overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-4">{t('common.name')}</th>
-              <th className="text-right py-4">{t('common.actions')}</th>
+              <th className="text-left py-4">{t("common.name")}</th>
+              <th className="text-right py-4">{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -136,13 +142,13 @@ export function BrandView() {
                     onClick={() => handleEdit(brand)}
                     className="text-blue-600 hover:text-blue-800 px-2"
                   >
-                    {t('common.edit')}
+                    {t("common.edit")}
                   </button>
                   <button
                     onClick={() => handleDelete(brand.id)}
                     className="text-red-600 hover:text-red-800 px-2"
                   >
-                    {t('common.delete')}
+                    {t("common.delete")}
                   </button>
                 </td>
               </tr>
@@ -150,7 +156,9 @@ export function BrandView() {
             {filteredBrands.length === 0 && (
               <tr>
                 <td colSpan={2} className="text-center py-8 text-gray-500">
-                  {searchQuery ? t('master.messages.noResults') : t('master.messages.noBrands')}
+                  {searchQuery
+                    ? t("master.messages.noResults")
+                    : t("master.messages.noBrands")}
                 </td>
               </tr>
             )}
@@ -161,18 +169,23 @@ export function BrandView() {
       <Modal
         isOpen={showModal}
         onClose={handleCloseModal}
-        title={editingBrand ? t('master.form.brand.editBrand') : t('master.form.brand.addNew')}
+        title={
+          editingBrand
+            ? t("master.form.brand.editBrand")
+            : t("master.form.brand.addNew")
+        }
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {t('master.form.brand.name.label')} <span className="text-red-500">*</span>
+              {t("master.form.brand.name.label")}{" "}
+              <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ name: e.target.value })}
-              placeholder={t('master.form.brand.name.placeholder')}
+              placeholder={t("master.form.brand.name.placeholder")}
               className="w-full rounded-lg border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               required
             />
@@ -185,14 +198,14 @@ export function BrandView() {
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
               disabled={isSubmitting}
             >
-              {t('common.cancel')}
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               disabled={isSubmitting}
             >
-              {isSubmitting ? t('modal.saving') : t('common.save')}
+              {isSubmitting ? t("modal.saving") : t("common.save")}
             </button>
           </div>
         </form>

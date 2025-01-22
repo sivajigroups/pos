@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Transaction } from '../types';
-import { transactionService } from '../services/transactionService';
-import { SearchBar } from './SearchBar';
-import { formatCurrency } from '../utils/currency';
-import { InvoicePrint } from './Invoice/InvoicePrint';
-import { PrintButton } from './Invoice/PrintButton';
-import { StatusBadge } from './StatusBadge';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Transaction } from "../types";
+import { transactionService } from "../services/transactionService";
+import { SearchBar } from "./SearchBar";
+import { formatCurrency } from "../utils/currency";
+import { InvoicePrint } from "./Invoice/InvoicePrint";
+import { PrintButton } from "./Invoice/PrintButton";
+import { StatusBadge } from "./StatusBadge";
 
 export function OrdersView() {
   const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   useEffect(() => {
     loadTransactions();
@@ -27,8 +28,10 @@ export function OrdersView() {
       setTransactions(data);
       setError(null);
     } catch (err) {
-      console.error('Failed to load transactions:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load transactions');
+      console.error("Failed to load transactions:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to load transactions"
+      );
     } finally {
       setLoading(false);
     }
@@ -37,9 +40,9 @@ export function OrdersView() {
   const handlePrint = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
     setTimeout(() => {
-      const printContent = document.getElementById('invoice-print');
+      const printContent = document.getElementById("invoice-print");
       const originalContents = document.body.innerHTML;
-      
+
       if (printContent) {
         document.body.innerHTML = printContent.innerHTML;
         window.print();
@@ -49,13 +52,13 @@ export function OrdersView() {
     }, 100);
   };
 
-  const filteredTransactions = transactions.filter(transaction =>
-    searchQuery ? (
-      transaction.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      transaction.items.some(item => 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    ) : true
+  const filteredTransactions = transactions.filter((transaction) =>
+    searchQuery
+      ? transaction.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        transaction.items.some((item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : true
   );
 
   if (loading) {
@@ -69,33 +72,33 @@ export function OrdersView() {
   if (error) {
     return (
       <div className="text-red-600 text-center">
-        <h2 className="text-2xl font-bold mb-2">{t('common.error')}</h2>
+        <h2 className="text-2xl font-bold mb-2">{t("common.error")}</h2>
         <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="flex flex-col h-full bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">{t('orders.title')}</h2>
+        <h2 className="text-2xl font-bold">{t("orders.title")}</h2>
       </div>
 
       <div className="mb-6">
         <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder={t('orders.search')}
+          placeholder={t("orders.search")}
         />
       </div>
 
-      <div className="space-y-6">
-        {filteredTransactions.map(transaction => (
+      <div className=" flex flex-col overflow-y-auto space-y-6">
+        {filteredTransactions.map((transaction) => (
           <div key={transaction.id} className="border rounded-lg p-4">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-semibold">
-                  {t('orders.orderId')}: {transaction.id}
+                  {t("orders.orderId")}: {transaction.id}
                 </h3>
                 <p className="text-sm text-gray-600">
                   {transaction.timestamp.toLocaleString()}
@@ -113,7 +116,7 @@ export function OrdersView() {
 
         {filteredTransactions.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            {searchQuery ? t('orders.noResults') : t('orders.noOrders')}
+            {searchQuery ? t("orders.noResults") : t("orders.noOrders")}
           </div>
         )}
       </div>
