@@ -1,6 +1,6 @@
 import React from "react";
 import { ProductGrid } from "../components/ProductGrid";
-import { Cart } from "../components/Cart";
+import { Cart as CartComponent } from "../components/Cart";
 import { CategoryFilter } from "../components/CategoryFilter";
 import { useProducts } from "../hooks/useProducts";
 import { useCart } from "../hooks/useCart";
@@ -47,7 +47,7 @@ export function POSView() {
         />
       </div>
       <div className="flex flex-col lg:w-1/3 h-full">
-        <Cart
+        <CartComponent
           items={cartItems}
           onUpdateQuantity={updateQuantity}
           onRemoveItem={removeItem}
